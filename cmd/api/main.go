@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"gladiatortravel/internal/handler"
 	"gladiatortravel/internal/repository"
@@ -13,9 +14,9 @@ import (
 func main() {
 	cfg := loadConfig()
 
-	repo, err := repository.NewPostgresRepository(cfg.DatabaseURL)
+	repo, err := connectWithRetry(cfg.DatabaseURL, 20, 2*time.Second)
 	if err != nil {
-		log.Fatalf("failed to connect db: %v", err)
+		log.Fatalf("failed to connect db after retries: %v", err)
 	}
 	defer repo.Close()
 
@@ -26,6 +27,20 @@ func main() {
 	if err := http.ListenAndServe(cfg.Port, h.Router()); err != nil {
 		log.Fatalf("server failed: %v", err)
 	}
+}
+
+func connectWithRetry(databaseURL string, attempts int, delay time.Duration) (*repository.PostgresRepository, error) {
+	var lastErr error
+	for i := 1; i <= attempts; i++ {
+		repo, err := repository.NewPostgresRepository(databaseURL)
+		if err == nil {
+			return repo, nil
+		}
+		lastErr = err
+		log.Printf("db connection attempt %d/%d failed: %v", i, attempts, err)
+		time.Sleep(delay)
+	}
+	return nil, lastErr
 }
 
 type config struct {

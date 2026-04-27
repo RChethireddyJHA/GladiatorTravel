@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -24,6 +25,9 @@ func NewHTTPHandler(svc *usecase.Service) *HTTPHandler {
 func (h *HTTPHandler) Router() http.Handler {
 	r := chi.NewRouter()
 	r.Get("/health", h.health)
+	r.Get("/swagger", h.swaggerUI)
+	r.Get("/swagger/", h.swaggerUI)
+	r.Get("/swagger/openapi.yaml", h.swaggerSpec)
 
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Get("/destinations", h.listDestinations)
@@ -37,6 +41,34 @@ func (h *HTTPHandler) Router() http.Handler {
 		r.Get("/trips/{tripID}/itinerary", h.getItinerary)
 	})
 	return r
+}
+
+func (h *HTTPHandler) swaggerUI(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	html := `<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GladiatorTravel Swagger</title>
+    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css" />
+  </head>
+  <body>
+    <div id="swagger-ui"></div>
+    <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+    <script>
+      window.ui = SwaggerUIBundle({
+        url: "/swagger/openapi.yaml",
+        dom_id: "#swagger-ui"
+      });
+    </script>
+  </body>
+</html>`
+	_, _ = fmt.Fprint(w, html)
+}
+
+func (h *HTTPHandler) swaggerSpec(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "api/openapi.yaml")
 }
 
 func (h *HTTPHandler) health(w http.ResponseWriter, _ *http.Request) {
