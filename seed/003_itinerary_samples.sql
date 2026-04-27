@@ -14,6 +14,8 @@ INSERT INTO trips (id, user_id, destination_id, start_date, end_date) VALUES
   (1, 1, 1, '2026-06-01', '2026-06-04')
 ON CONFLICT (id) DO NOTHING;
 
+SELECT setval(pg_get_serial_sequence('trips', 'id'), COALESCE((SELECT MAX(id) FROM trips), 1), true);
+
 INSERT INTO itineraries (trip_id, day_number, slot, venue_id, notes) VALUES
   (1, 1, 'lunch', 1, 'seed itinerary sample'),
   (1, 1, 'dinner', 3, 'seed itinerary sample'),

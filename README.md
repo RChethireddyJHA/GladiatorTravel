@@ -16,6 +16,7 @@ Go proof-of-concept API for food-and-bar-driven travel discovery and itinerary g
 - `migrations`: schema
 - `seed`: all-table seed scripts
 - `api/openapi.yaml`: API contract
+- `web`: Vue 3 frontend console
 
 ## Quick Start
 1. Start Postgres:
@@ -26,6 +27,23 @@ Go proof-of-concept API for food-and-bar-driven travel discovery and itinerary g
    - `make db-seed`
 4. Run API:
    - `make run`
+
+## Vue UI
+1. Ensure the API is running (for local dev proxy use `http://localhost:8081`).
+2. Install Node.js 20+.
+3. Start frontend:
+   - `cd web`
+   - `npm install`
+   - `npm run dev`
+4. Open `http://localhost:5173`.
+
+The Vue app includes pages for all API features:
+- Overview + health
+- Destination discovery + venues/accommodations/travel options
+- User preferences
+- Venue feedback
+- Trip creation
+- Itinerary generation + retrieval
 
 ## Core Endpoints
 - `GET /health`

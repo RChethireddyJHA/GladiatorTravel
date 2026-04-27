@@ -1,0 +1,149 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  position: relative;
+  isolation: isolate;
+  font-family: var(--font-body);
+  color: var(--color-ink);
+  background: transparent;
+  transition: color var(--duration-theme) ease;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+body::before {
+  z-index: -2;
+  background-image: var(--bg-image-url);
+  background-size: cover;
+  background-position: center center;
+  transform: scale(1.02);
+}
+
+body::after {
+  z-index: -1;
+  background:
+    linear-gradient(130deg, var(--bg-overlay-start) 0%, var(--bg-overlay-mid) 46%, var(--bg-overlay-end) 100%),
+    linear-gradient(145deg, rgba(253, 247, 238, 0.4) 0%, rgba(246, 232, 212, 0.24) 100%);
+  transition: background var(--duration-theme) ease;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-family: var(--font-heading);
+  letter-spacing: -0.01em;
+}
+
+p {
+  margin: 0;
+  color: var(--color-ink-muted);
+}
+
+a {
+  color: inherit;
+}
+
+pre,
+code {
+  font-family: var(--font-mono);
+}
+
+input,
+select,
+textarea,
+button {
+  font: inherit;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--color-ink);
+  border-radius: var(--radius-md);
+  padding: 0.66rem 0.72rem;
+  transition: border-color var(--duration-fast) ease, box-shadow var(--duration-fast) ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(29, 143, 125, 0.18);
+}
+
+button {
+  width: 100%;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 0.72rem 0.88rem;
+  cursor: pointer;
+  font-weight: 700;
+  color: #effaf6;
+  background: linear-gradient(110deg, var(--color-accent-strong) 0%, var(--color-accent) 100%);
+  transition: transform var(--duration-fast) ease, filter var(--duration-fast) ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  filter: saturate(1.08);
+}
+
+button.secondary {
+  background: linear-gradient(110deg, #2084bf 0%, var(--color-info) 100%);
+}
+
+button.ghost {
+  background: linear-gradient(110deg, #7e58cc 0%, #a07ae6 100%);
+}
+
+button:disabled {
+  opacity: 0.62;
+  transform: none;
+  cursor: not-allowed;
+}
+
+label {
+  display: block;
+  margin-bottom: var(--space-2);
+  color: var(--color-ink);
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+.panel-elevated,
+.panel,
+.side-nav,
+.top-bar,
+.status-pill,
+.nav-list a,
+input,
+select,
+textarea {
+  transition:
+    background-color var(--duration-theme) ease,
+    background var(--duration-theme) ease,
+    border-color var(--duration-theme) ease,
+    color var(--duration-theme) ease,
+    box-shadow var(--duration-theme) ease;
+}

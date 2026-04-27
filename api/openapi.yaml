@@ -3,7 +3,7 @@ info:
   title: GladiatorTravel API
   version: 0.1.0
 servers:
-  - url: http://localhost:8080
+  - url: /
 paths:
   /health:
     get:
@@ -66,6 +66,17 @@ paths:
   /api/v1/me/preferences:
     put:
       summary: Upsert user preferences
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpsertPreferencesRequest"
+            example:
+              user_id: 1
+              budget_level: 3
+              prefers_late_night: true
+              avoid_tags: quiet_only
       responses:
         "200":
           description: Saved
@@ -78,12 +89,32 @@ paths:
           required: true
           schema:
             type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VenueFeedbackRequest"
+            example:
+              user_id: 1
+              feedback: up
       responses:
         "201":
           description: Recorded
   /api/v1/trips:
     post:
       summary: Create trip
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTripRequest"
+            example:
+              user_id: 1
+              destination_id: 1
+              start_date: "2026-06-01"
+              end_date: "2026-06-04"
       responses:
         "201":
           description: Trip created
@@ -96,6 +127,15 @@ paths:
           required: true
           schema:
             type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateItineraryRequest"
+            example:
+              destination_id: 1
+              days: 3
       responses:
         "201":
           description: Generated
@@ -111,3 +151,57 @@ paths:
       responses:
         "200":
           description: Itinerary items
+
+components:
+  schemas:
+    UpsertPreferencesRequest:
+      type: object
+      required: [user_id, budget_level, prefers_late_night, avoid_tags]
+      properties:
+        user_id:
+          type: integer
+          format: int64
+        budget_level:
+          type: integer
+          minimum: 1
+          maximum: 4
+        prefers_late_night:
+          type: boolean
+        avoid_tags:
+          type: string
+    VenueFeedbackRequest:
+      type: object
+      required: [user_id, feedback]
+      properties:
+        user_id:
+          type: integer
+          format: int64
+        feedback:
+          type: string
+          enum: [up, down]
+    CreateTripRequest:
+      type: object
+      required: [user_id, destination_id, start_date, end_date]
+      properties:
+        user_id:
+          type: integer
+          format: int64
+        destination_id:
+          type: integer
+          format: int64
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+    GenerateItineraryRequest:
+      type: object
+      required: [destination_id, days]
+      properties:
+        destination_id:
+          type: integer
+          format: int64
+        days:
+          type: integer
+          minimum: 1
