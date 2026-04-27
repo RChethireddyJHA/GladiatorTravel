@@ -1,0 +1,10 @@
+DROP TABLE IF EXISTS itineraries;
+DROP TABLE IF EXISTS trips;
+DROP TABLE IF EXISTS user_venue_feedback;
+DROP TABLE IF EXISTS user_preferences;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS travel_options;
+DROP TABLE IF EXISTS accommodations;
+DROP TABLE IF EXISTS venues;
+DROP TABLE IF EXISTS destination_scores;
+DROP TABLE IF EXISTS destinations;

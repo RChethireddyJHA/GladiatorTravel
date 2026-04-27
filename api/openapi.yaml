@@ -1,0 +1,113 @@
+openapi: 3.0.3
+info:
+  title: GladiatorTravel API
+  version: 0.1.0
+servers:
+  - url: http://localhost:8080
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+  /api/v1/destinations:
+    get:
+      summary: List ranked destinations
+      parameters:
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: [food, bar, combined]
+        - in: query
+          name: min_score
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Destination list
+  /api/v1/destinations/{id}/venues:
+    get:
+      summary: List venues for destination
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Venue list
+  /api/v1/destinations/{id}/accommodations:
+    get:
+      summary: List accommodations for destination
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Accommodation list
+  /api/v1/destinations/{id}/travel-options:
+    get:
+      summary: List travel options
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Travel options
+  /api/v1/me/preferences:
+    put:
+      summary: Upsert user preferences
+      responses:
+        "200":
+          description: Saved
+  /api/v1/me/venues/{venueID}/feedback:
+    post:
+      summary: Add user feedback to a venue
+      parameters:
+        - in: path
+          name: venueID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "201":
+          description: Recorded
+  /api/v1/trips:
+    post:
+      summary: Create trip
+      responses:
+        "201":
+          description: Trip created
+  /api/v1/trips/{tripID}/generate-itinerary:
+    post:
+      summary: Generate itinerary
+      parameters:
+        - in: path
+          name: tripID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "201":
+          description: Generated
+  /api/v1/trips/{tripID}/itinerary:
+    get:
+      summary: Get itinerary
+      parameters:
+        - in: path
+          name: tripID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Itinerary items
