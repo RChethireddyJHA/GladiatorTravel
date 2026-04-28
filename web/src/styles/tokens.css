@@ -1,0 +1,141 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700&display=swap");
+
+:root {
+  color-scheme: light;
+
+  --color-bg: #fdf7ee;
+  --color-bg-alt: #f6e8d4;
+  --color-surface: #fff9f1;
+  --color-surface-soft: #fff3e3;
+  --color-surface-strong: #fbe9d1;
+  --color-ink: #2f2430;
+  --color-ink-muted: #6d5b67;
+  --color-border: #e4cdb7;
+  --color-border-strong: #d6b396;
+  --color-accent: #ff7a59;
+  --color-accent-strong: #e65c3b;
+  --color-accent-soft: #ffe3d5;
+  --color-info: #2d9cdb;
+  --color-danger: #d64545;
+  --color-success: #229c70;
+
+  --font-body: "Manrope", "Segoe UI", sans-serif;
+  --font-heading: "Sora", "Segoe UI", sans-serif;
+  --font-mono: "Cascadia Code", "Consolas", monospace;
+
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 26px;
+  --radius-pill: 999px;
+
+  --space-1: 0.35rem;
+  --space-2: 0.55rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.35rem;
+  --space-6: 1.75rem;
+  --space-7: 2.3rem;
+
+  --shadow-sm: 0 7px 18px rgba(117, 77, 39, 0.11);
+  --shadow-md: 0 16px 36px rgba(117, 77, 39, 0.18);
+  --shadow-lg: 0 30px 58px rgba(117, 77, 39, 0.24);
+
+  --bg-image-url: url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2000&q=80");
+  --bg-overlay-start: rgba(23, 15, 8, 0.56);
+  --bg-overlay-mid: rgba(23, 15, 8, 0.18);
+  --bg-overlay-end: rgba(23, 15, 8, 0.56);
+
+  --panel-gradient: linear-gradient(170deg, rgba(255, 249, 241, 0.92) 0%, rgba(255, 239, 223, 0.86) 100%);
+  --side-nav-gradient:
+    linear-gradient(170deg, rgba(255, 241, 221, 0.94) 0%, rgba(255, 228, 203, 0.88) 100%),
+    radial-gradient(circle at 18% 18%, rgba(255, 137, 86, 0.22) 0%, transparent 48%);
+  --top-bar-gradient:
+    linear-gradient(130deg, rgba(255, 250, 244, 0.9) 0%, rgba(255, 229, 206, 0.82) 100%),
+    radial-gradient(circle at 88% 10%, rgba(255, 123, 89, 0.24) 0%, transparent 44%);
+  --nav-active-gradient: linear-gradient(135deg, #ffe4d6 0%, #ffd2bb 54%, #ffc7aa 100%);
+  --kpi-gradient: linear-gradient(150deg, #fff5e9 0%, #ffe8d6 100%);
+
+  --status-dot-gradient: radial-gradient(circle at 35% 35%, #ffd34f 0%, #ff8f3c 100%);
+  --status-dot-shadow: 0 0 0 3px rgba(255, 143, 60, 0.22);
+
+  --duration-fast: 140ms;
+  --duration-base: 220ms;
+  --duration-theme: 420ms;
+}
+
+:root[data-theme="ocean"] {
+  --color-bg: #eaf6fb;
+  --color-bg-alt: #d7ebf7;
+  --color-surface: #f4fbff;
+  --color-surface-soft: #e8f6ff;
+  --color-surface-strong: #d8ecfb;
+  --color-ink: #1a3040;
+  --color-ink-muted: #4f6b7d;
+  --color-border: #b8d6ea;
+  --color-border-strong: #95bfdc;
+  --color-accent: #2f8ccf;
+  --color-accent-strong: #1d6fa7;
+  --color-accent-soft: #d9efff;
+  --color-info: #00a6a6;
+
+  --shadow-sm: 0 7px 18px rgba(19, 86, 128, 0.11);
+  --shadow-md: 0 16px 36px rgba(19, 86, 128, 0.18);
+  --shadow-lg: 0 30px 58px rgba(19, 86, 128, 0.24);
+
+  --bg-image-url: url("https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2000&q=80");
+  --bg-overlay-start: rgba(8, 22, 35, 0.56);
+  --bg-overlay-mid: rgba(8, 22, 35, 0.18);
+  --bg-overlay-end: rgba(8, 22, 35, 0.56);
+
+  --panel-gradient: linear-gradient(170deg, rgba(244, 251, 255, 0.92) 0%, rgba(228, 245, 255, 0.86) 100%);
+  --side-nav-gradient:
+    linear-gradient(170deg, rgba(233, 247, 255, 0.94) 0%, rgba(215, 235, 247, 0.88) 100%),
+    radial-gradient(circle at 18% 18%, rgba(47, 140, 207, 0.18) 0%, transparent 48%);
+  --top-bar-gradient:
+    linear-gradient(130deg, rgba(244, 251, 255, 0.9) 0%, rgba(218, 238, 250, 0.82) 100%),
+    radial-gradient(circle at 88% 10%, rgba(47, 140, 207, 0.24) 0%, transparent 44%);
+  --nav-active-gradient: linear-gradient(135deg, #d8eeff 0%, #c5e4fb 54%, #b9dcf6 100%);
+  --kpi-gradient: linear-gradient(150deg, #eef9ff 0%, #d8efff 100%);
+
+  --status-dot-gradient: radial-gradient(circle at 35% 35%, #60e1ff 0%, #2f8ccf 100%);
+  --status-dot-shadow: 0 0 0 3px rgba(47, 140, 207, 0.24);
+}
+
+:root[data-theme="aurora"] {
+  --color-bg: #f4f1ff;
+  --color-bg-alt: #e8e1ff;
+  --color-surface: #faf8ff;
+  --color-surface-soft: #f2edff;
+  --color-surface-strong: #e6ddff;
+  --color-ink: #2f2440;
+  --color-ink-muted: #675b80;
+  --color-border: #d3c4f0;
+  --color-border-strong: #bca9e8;
+  --color-accent: #8e67f2;
+  --color-accent-strong: #6f4bd0;
+  --color-accent-soft: #e6dcff;
+  --color-info: #57c7ff;
+
+  --shadow-sm: 0 7px 18px rgba(92, 62, 163, 0.13);
+  --shadow-md: 0 16px 36px rgba(92, 62, 163, 0.2);
+  --shadow-lg: 0 30px 58px rgba(92, 62, 163, 0.26);
+
+  --bg-image-url: url("https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=2000&q=80");
+  --bg-overlay-start: rgba(23, 13, 38, 0.56);
+  --bg-overlay-mid: rgba(23, 13, 38, 0.2);
+  --bg-overlay-end: rgba(23, 13, 38, 0.56);
+
+  --panel-gradient: linear-gradient(170deg, rgba(250, 248, 255, 0.92) 0%, rgba(239, 232, 255, 0.86) 100%);
+  --side-nav-gradient:
+    linear-gradient(170deg, rgba(246, 241, 255, 0.94) 0%, rgba(233, 223, 255, 0.88) 100%),
+    radial-gradient(circle at 18% 18%, rgba(142, 103, 242, 0.2) 0%, transparent 48%);
+  --top-bar-gradient:
+    linear-gradient(130deg, rgba(250, 248, 255, 0.9) 0%, rgba(232, 223, 255, 0.82) 100%),
+    radial-gradient(circle at 88% 10%, rgba(142, 103, 242, 0.24) 0%, transparent 44%);
+  --nav-active-gradient: linear-gradient(135deg, #ece3ff 0%, #ddceff 54%, #d1beff 100%);
+  --kpi-gradient: linear-gradient(150deg, #f4efff 0%, #e7dcff 100%);
+
+  --status-dot-gradient: radial-gradient(circle at 35% 35%, #c9a8ff 0%, #8e67f2 100%);
+  --status-dot-shadow: 0 0 0 3px rgba(142, 103, 242, 0.24);
+}

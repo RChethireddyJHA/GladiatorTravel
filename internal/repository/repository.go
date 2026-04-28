@@ -182,7 +182,7 @@ func (r *PostgresRepository) GetItinerary(ctx context.Context, tripID int64) ([]
 	}
 	defer rows.Close()
 
-	var out []model.ItineraryItem
+	out := []model.ItineraryItem{}
 	for rows.Next() {
 		var it model.ItineraryItem
 		if err := rows.Scan(&it.DayNumber, &it.Slot, &it.VenueID, &it.Notes); err != nil {
