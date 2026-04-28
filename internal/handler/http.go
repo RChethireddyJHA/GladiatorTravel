@@ -2,10 +2,12 @@ package handler
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -30,6 +32,9 @@ func (h *HTTPHandler) Router() http.Handler {
 	r.Get("/swagger/openapi.yaml", h.swaggerSpec)
 
 	r.Route("/api/v1", func(r chi.Router) {
+		r.Post("/auth/register", h.register)
+		r.Post("/auth/login", h.login)
+		r.Get("/me", h.me)
 		r.Get("/destinations", h.listDestinations)
 		r.Get("/destinations/{id}/venues", h.listVenues)
 		r.Get("/destinations/{id}/accommodations", h.listAccommodations)
@@ -41,6 +46,67 @@ func (h *HTTPHandler) Router() http.Handler {
 		r.Get("/trips/{tripID}/itinerary", h.getItinerary)
 	})
 	return r
+}
+
+func (h *HTTPHandler) register(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		Email       string `json:"email"`
+		DisplayName string `json:"display_name"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		respondError(w, http.StatusBadRequest, "invalid body")
+		return
+	}
+	user, token, err := h.svc.Register(r.Context(), req.Email, req.DisplayName)
+	if err != nil {
+		respondError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	respondJSON(w, http.StatusCreated, map[string]any{
+		"token": token,
+		"user":  user,
+	})
+}
+
+func (h *HTTPHandler) login(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		Email string `json:"email"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		respondError(w, http.StatusBadRequest, "invalid body")
+		return
+	}
+	user, token, err := h.svc.Login(r.Context(), req.Email)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			respondError(w, http.StatusUnauthorized, "user not found")
+			return
+		}
+		respondError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	respondJSON(w, http.StatusOK, map[string]any{
+		"token": token,
+		"user":  user,
+	})
+}
+
+func (h *HTTPHandler) me(w http.ResponseWriter, r *http.Request) {
+	token := bearerToken(r.Header.Get("Authorization"))
+	if token == "" {
+		respondError(w, http.StatusUnauthorized, "missing bearer token")
+		return
+	}
+	user, err := h.svc.Me(r.Context(), token)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			respondError(w, http.StatusUnauthorized, "user not found")
+			return
+		}
+		respondError(w, http.StatusUnauthorized, err.Error())
+		return
+	}
+	respondJSON(w, http.StatusOK, user)
 }
 
 func (h *HTTPHandler) swaggerUI(w http.ResponseWriter, _ *http.Request) {
@@ -255,4 +321,15 @@ func respondJSON(w http.ResponseWriter, status int, payload any) {
 
 func respondError(w http.ResponseWriter, status int, msg string) {
 	respondJSON(w, status, map[string]string{"error": msg})
+}
+
+func bearerToken(header string) string {
+	if header == "" {
+		return ""
+	}
+	parts := strings.SplitN(header, " ", 2)
+	if len(parts) != 2 || !strings.EqualFold(parts[0], "bearer") {
+		return ""
+	}
+	return strings.TrimSpace(parts[1])
 }

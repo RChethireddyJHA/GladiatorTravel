@@ -10,6 +10,7 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d gladiatortravel"]
       interval: 5s
@@ -19,6 +20,7 @@ services:
   migrate:
     image: migrate/migrate:4
     container_name: gladiatortravel-migrate
+    profiles: ["init"]
     depends_on:
       db:
         condition: service_healthy
@@ -32,9 +34,11 @@ services:
         "postgres://postgres:postgres@db:5432/gladiatortravel?sslmode=disable",
         "up"
       ]
+    restart: "no"
   seed:
     image: postgres:16
     container_name: gladiatortravel-seed
+    profiles: ["init"]
     depends_on:
       db:
         condition: service_healthy
@@ -45,7 +49,13 @@ services:
     volumes:
       - ./seed:/seed:ro
       - ./scripts/seed.sh:/seed.sh:ro
-    entrypoint: ["/bin/sh", "/seed.sh"]
+    entrypoint:
+      [
+        "/bin/sh",
+        "-c",
+        "tr -d '\\r' < /seed.sh > /tmp/seed.sh && /bin/sh /tmp/seed.sh"
+      ]
+    restart: "no"
   api:
     build:
       context: .
@@ -54,15 +64,26 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      migrate:
-        condition: service_completed_successfully
-      seed:
-        condition: service_completed_successfully
     environment:
       PORT: "8080"
       DATABASE_URL: postgres://postgres:postgres@db:5432/gladiatortravel?sslmode=disable
     ports:
       - "8080:8080"
+    restart: unless-stopped
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: gladiatortravel-frontend
+    environment:
+      VITE_API_BASE_URL: /api
+      VITE_API_PROXY_TARGET: http://api:8080
+    ports:
+      - "5173:5173"
+    depends_on:
+      api:
+        condition: service_started
+    restart: unless-stopped
 
 volumes:
   pgdata:

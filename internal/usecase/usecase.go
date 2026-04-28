@@ -2,7 +2,10 @@ package usecase
 
 import (
 	"context"
+	"encoding/base64"
 	"errors"
+	"fmt"
+	"strconv"
 	"strings"
 
 	"gladiatortravel/internal/model"
@@ -88,4 +91,54 @@ func (s *Service) GenerateItinerary(ctx context.Context, tripID, destinationID i
 
 func (s *Service) GetItinerary(ctx context.Context, tripID int64) ([]model.ItineraryItem, error) {
 	return s.repo.GetItinerary(ctx, tripID)
+}
+
+func (s *Service) Register(ctx context.Context, email, displayName string) (model.User, string, error) {
+	if email == "" || displayName == "" {
+		return model.User{}, "", errors.New("email and display_name are required")
+	}
+	u, err := s.repo.CreateUser(ctx, email, displayName)
+	if err != nil {
+		return model.User{}, "", err
+	}
+	return u, issueToken(u.ID), nil
+}
+
+func (s *Service) Login(ctx context.Context, email string) (model.User, string, error) {
+	if email == "" {
+		return model.User{}, "", errors.New("email is required")
+	}
+	u, err := s.repo.GetUserByEmail(ctx, email)
+	if err != nil {
+		return model.User{}, "", err
+	}
+	return u, issueToken(u.ID), nil
+}
+
+func (s *Service) Me(ctx context.Context, token string) (model.User, error) {
+	userID, err := parseToken(token)
+	if err != nil {
+		return model.User{}, err
+	}
+	return s.repo.GetUserByID(ctx, userID)
+}
+
+func issueToken(userID int64) string {
+	return base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("uid:%d", userID)))
+}
+
+func parseToken(token string) (int64, error) {
+	raw, err := base64.StdEncoding.DecodeString(strings.TrimSpace(token))
+	if err != nil {
+		return 0, errors.New("invalid token")
+	}
+	parts := strings.SplitN(string(raw), ":", 2)
+	if len(parts) != 2 || parts[0] != "uid" {
+		return 0, errors.New("invalid token")
+	}
+	userID, err := strconv.ParseInt(parts[1], 10, 64)
+	if err != nil || userID == 0 {
+		return 0, errors.New("invalid token")
+	}
+	return userID, nil
 }

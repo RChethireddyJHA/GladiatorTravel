@@ -214,3 +214,30 @@ func (r *PostgresRepository) TopVenuesForDestination(ctx context.Context, destin
 	}
 	return out, rows.Err()
 }
+
+func (r *PostgresRepository) CreateUser(ctx context.Context, email, displayName string) (model.User, error) {
+	var u model.User
+	err := r.db.QueryRowContext(ctx, `
+		INSERT INTO users (email, display_name)
+		VALUES ($1, $2)
+		RETURNING id, email, display_name`, email, displayName).Scan(&u.ID, &u.Email, &u.DisplayName)
+	return u, err
+}
+
+func (r *PostgresRepository) GetUserByEmail(ctx context.Context, email string) (model.User, error) {
+	var u model.User
+	err := r.db.QueryRowContext(ctx, `
+		SELECT id, email, display_name
+		FROM users
+		WHERE email = $1`, email).Scan(&u.ID, &u.Email, &u.DisplayName)
+	return u, err
+}
+
+func (r *PostgresRepository) GetUserByID(ctx context.Context, id int64) (model.User, error) {
+	var u model.User
+	err := r.db.QueryRowContext(ctx, `
+		SELECT id, email, display_name
+		FROM users
+		WHERE id = $1`, id).Scan(&u.ID, &u.Email, &u.DisplayName)
+	return u, err
+}

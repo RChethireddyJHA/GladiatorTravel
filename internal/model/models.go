@@ -60,3 +60,9 @@ type ItineraryItem struct {
 	VenueID   int64  `json:"venue_id"`
 	Notes     string `json:"notes"`
 }
+
+type User struct {
+	ID          int64  `json:"id"`
+	Email       string `json:"email"`
+	DisplayName string `json:"display_name"`
+}
